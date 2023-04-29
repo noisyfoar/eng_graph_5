@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdlib.h>
 #include "math_3d.h"
 
 Vector3f Vector3f::Cross(const Vector3f& v) const
@@ -177,4 +178,11 @@ Quaternion operator*(const Quaternion& q, const Vector3f& v)
     Quaternion ret(x, y, z, w);
 
     return ret;
+}
+
+
+float RandomFloat()
+{
+    float Max = RAND_MAX;
+    return ((float)rand() / Max);
 }
