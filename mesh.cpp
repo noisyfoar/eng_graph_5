@@ -1,4 +1,20 @@
+/*
 
+	Copyright 2011 Etay Meiri
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <assert.h>
 
@@ -38,8 +54,7 @@ bool Mesh::MeshEntry::Init(const std::vector<Vertex>& Vertices,
     glGenBuffers(1, &IB);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * NumIndices, &Indices[0], GL_STATIC_DRAW);
-    
-    return GLCheckError();
+    return true;
 }
 
 Mesh::Mesh()
@@ -134,7 +149,7 @@ void Mesh::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 bool Mesh::InitMaterials(const aiScene* pScene, const std::string& Filename)
 {
     // Extract the directory part from the file name
-    std::string::size_type SlashIndex = Filename.find_last_of("\\");
+    std::string::size_type SlashIndex = Filename.find_last_of("/");
     std::string Dir;
 
     if (SlashIndex == std::string::npos) {

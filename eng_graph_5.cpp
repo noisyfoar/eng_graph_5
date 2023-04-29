@@ -1,13 +1,26 @@
-﻿#include <stdlib.h>
+﻿/*
+
+    Copyright 2011 Etay Meiri
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    Tutorial 27 - Billboarding and the geometry shader
+*/
+
 #include <math.h>
-#include <assert.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#ifdef __GNUC__
-#  if __GNUC_PREREQ(4,7)
-#include <unistd.h>
-#  endif
-#endif
 
 #include "engine_common.h"
 #include "util.h"
@@ -17,28 +30,17 @@
 #include "lighting_technique.h"
 #include "glut_backend.h"
 #include "mesh.h"
-#include "particle_system.h"
-
-#include <process.h>
-#include <ctime>
+#include "billboard_list.h"
 
 #define WINDOW_WIDTH  1280
 #define WINDOW_HEIGHT 1024
 
-/*static long long GetCurrentTimeMillis()
-{
-    time_t t;
-    time(&t);
 
-    long long ret = t.wSecond * 1000 + t.wMilliseconds / 1000;
-    return ret;
-}*/
-
-class Tutorial28 : public ICallbacks
+class Tutorial27 : public ICallbacks
 {
 public:
 
-    Tutorial28()
+    Tutorial27()
     {
         m_pLightingTechnique = NULL;
         m_pGameCamera = NULL;
@@ -56,12 +58,10 @@ public:
         m_persProjInfo.Width = WINDOW_WIDTH;
         m_persProjInfo.zNear = 1.0f;
         m_persProjInfo.zFar = 100.0f;
-
-        m_currentTimeMillis = GetCurrentTime();
     }
 
 
-    ~Tutorial28()
+    ~Tutorial27()
     {
         SAFE_DELETE(m_pLightingTechnique);
         SAFE_DELETE(m_pGameCamera);
@@ -73,8 +73,8 @@ public:
 
     bool Init()
     {
-        Vector3f Pos(0.0f, 0.4f, -0.5f);
-        Vector3f Target(0.0f, 0.2f, 1.0f);
+        Vector3f Pos(0.0f, 1.0f, -1.0f);
+        Vector3f Target(0.0f, -0.5f, 1.0f);
         Vector3f Up(0.0, 1.0f, 0.0f);
 
         m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT, Pos, Target, Up);
@@ -88,12 +88,16 @@ public:
 
         m_pLightingTechnique->Enable();
         m_pLightingTechnique->SetDirectionalLight(m_dirLight);
-        m_pLightingTechnique->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
-        m_pLightingTechnique->SetNormalMapTextureUnit(NORMAL_TEXTURE_UNIT_INDEX);
+        m_pLightingTechnique->SetColorTextureUnit(0);
+        m_pLightingTechnique->SetNormalMapTextureUnit(2);
 
         m_pGround = new Mesh();
 
         if (!m_pGround->LoadMesh("../Content/quad.obj")) {
+            return false;
+        }
+
+        if (!m_billboardList.Init("../Content/monster_hellknight.png")) {
             return false;
         }
 
@@ -111,9 +115,7 @@ public:
             return false;
         }
 
-        Vector3f ParticleSystemPos = Vector3f(0.0f, 0.0f, 1.0f);
-
-        return m_particleSystem.InitParticleSystem(ParticleSystemPos);
+        return true;
     }
 
 
@@ -125,10 +127,6 @@ public:
 
     virtual void RenderSceneCB()
     {
-        long long TimeNowMillis = GetCurrentTime();
-        assert(TimeNowMillis >= m_currentTimeMillis);
-        unsigned int DeltaTimeMillis = (unsigned int)(TimeNowMillis - m_currentTimeMillis);
-        m_currentTimeMillis = TimeNowMillis;
         m_pGameCamera->OnRender();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -146,11 +144,9 @@ public:
 
         m_pLightingTechnique->SetWVP(p.GetWVPTrans());
         m_pLightingTechnique->SetWorldMatrix(p.GetWorldTrans());
-
         m_pGround->Render();
 
-        m_particleSystem.Render(DeltaTimeMillis, p.GetVPTrans(), m_pGameCamera->GetPos());
-
+        m_billboardList.Render(p.GetVPTrans(), m_pGameCamera->GetPos());
         glutSwapBuffers();
     }
 
@@ -184,7 +180,6 @@ public:
 
 private:
 
-    long long m_currentTimeMillis;
     LightingTechnique* m_pLightingTechnique;
     Camera* m_pGameCamera;
     DirectionalLight m_dirLight;
@@ -192,22 +187,20 @@ private:
     Texture* m_pTexture;
     Texture* m_pNormalMap;
     PersProjInfo m_persProjInfo;
-    ParticleSystem m_particleSystem;
+    BillboardList m_billboardList;
 };
 
 
 int main(int argc, char** argv)
 {
-    srand(_getpid());
-
+    Magick::InitializeMagick(*argv);
     GLUTBackendInit(argc, argv);
-    Magick::InitializeMagick(nullptr); // <--- added this line
 
-    if (!GLUTBackendCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, 32, false, "Tutorial 28")) {
+    if (!GLUTBackendCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, 32, false, "Tutorial 27")) {
         return 1;
     }
 
-    Tutorial28* pApp = new Tutorial28();
+    Tutorial27* pApp = new Tutorial27();
 
     if (!pApp->Init()) {
         return 1;

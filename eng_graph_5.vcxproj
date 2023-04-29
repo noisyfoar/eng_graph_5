@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="billboard_list.cpp" />
     <ClCompile Include="billboard_technique.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="eng_graph_5.cpp" />
@@ -140,14 +141,12 @@
     <ClCompile Include="lighting_technique.cpp" />
     <ClCompile Include="math_3d.cpp" />
     <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="particle_system.cpp" />
     <ClCompile Include="pipeline.cpp" />
-    <ClCompile Include="ps_update_technique.cpp" />
-    <ClCompile Include="random_texture.cpp" />
     <ClCompile Include="technique.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="billboard_list.h" />
     <ClInclude Include="billboard_technique.h" />
     <ClInclude Include="callbacks.h" />
     <ClInclude Include="camera.h" />
@@ -156,10 +155,7 @@
     <ClInclude Include="lighting_technique.h" />
     <ClInclude Include="math_3d.h" />
     <ClInclude Include="mesh.h" />
-    <ClInclude Include="particle_system.h" />
     <ClInclude Include="pipeline.h" />
-    <ClInclude Include="ps_update_technique.h" />
-    <ClInclude Include="random_texture.h" />
     <ClInclude Include="technique.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="util.h" />
@@ -174,6 +170,8 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets" Condition="Exists('packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" />
     <Import Project="packages\Assimp.3.0.0\build\native\Assimp.targets" Condition="Exists('packages\Assimp.3.0.0\build\native\Assimp.targets')" />
+    <Import Project="packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" />
+    <Import Project="packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets" Condition="Exists('packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -181,5 +179,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets'))" />
     <Error Condition="!Exists('packages\Assimp.3.0.0\build\native\Assimp.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Assimp.3.0.0\build\native\Assimp.targets'))" />
+    <Error Condition="!Exists('packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets'))" />
+    <Error Condition="!Exists('packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets'))" />
   </Target>
 </Project>
